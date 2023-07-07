@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import { signUp } from '../Controllers/user.controller.js';
+import userController from '../Controllers/user.controller.js';
 
 const userRoute = Router();
 
-userRoute.post('/', signUp);
+userRoute.post('/', userController.signUpUser);
+userRoute.get('/', userController.findAllUsers);
+userRoute.get('/:userId', userController.findUserById);
 
 export default userRoute;
