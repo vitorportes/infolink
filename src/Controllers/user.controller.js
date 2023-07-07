@@ -65,6 +65,49 @@ const findUserById = async (req, res) => {
     }
 };
 
-const userController = { signUpUser, findAllUsers, findUserById };
+const updateUser = async (req, res) => {
+    const { name, username, email, password, avatar, background } = req.body;
+
+    if (!name && !username && !email && !password && !avatar && !background) {
+        return res
+            .status(400)
+            .send(
+                'Preencha pelo menos um dos campos para atualizar seus dados'
+            );
+    }
+
+    const userId = req.params.userId;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).send('id de usuário inválido');
+    }
+
+    try {
+        const user = await userServices.findUserById(userId);
+
+        if (!user) {
+            return res.status(404).send('O usuário não foi encontrado');
+        }
+
+        await userServices.updateUser(
+            userId,
+            name,
+            username,
+            email,
+            password,
+            avatar,
+            background
+        );
+
+        return res.status(200).send('Atualização de dados feita  com sucesso');
+    } catch (error) {
+        console.log(error);
+        return res
+            .status(500)
+            .send('Houve algum erro ao tentar atualizar os dados do usário');
+    }
+};
+
+const userController = { signUpUser, findAllUsers, findUserById, updateUser };
 
 export default userController;
