@@ -1,15 +1,17 @@
-import mongoose from 'mongoose';
 import userServices from '../Services/user.service.js';
 
 const signUpUser = async (req, res) => {
     const { name, username, email, password, avatar, background } = req.body;
 
-    if (!name || !username || !email || !password || !avatar || !background) {
-        return res.status(400).send('preencha todos os campos');
-    }
-
     try {
-        const user = await userServices.signUp(req.body);
+        const user = await userServices.signUp({
+            name,
+            username,
+            email,
+            password,
+            avatar,
+            background,
+        });
 
         if (!user) {
             return res
@@ -47,17 +49,8 @@ const findAllUsers = async (req, res) => {
 const findUserById = async (req, res) => {
     const userId = req.params.userId;
 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-        return res.status(400).send('id de usuário inválido');
-    }
-
     try {
         const user = await userServices.findUserById(userId);
-
-        if (!user) {
-            return res.status(404).send('O usuário não foi encontrado');
-        }
-
         return res.status(200).send(user);
     } catch (error) {
         console.log(error);
@@ -67,28 +60,9 @@ const findUserById = async (req, res) => {
 
 const updateUser = async (req, res) => {
     const { name, username, email, password, avatar, background } = req.body;
-
-    if (!name && !username && !email && !password && !avatar && !background) {
-        return res
-            .status(400)
-            .send(
-                'Preencha pelo menos um dos campos para atualizar seus dados'
-            );
-    }
-
     const userId = req.params.userId;
 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-        return res.status(400).send('id de usuário inválido');
-    }
-
     try {
-        const user = await userServices.findUserById(userId);
-
-        if (!user) {
-            return res.status(404).send('O usuário não foi encontrado');
-        }
-
         await userServices.updateUser(
             userId,
             name,
