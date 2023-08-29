@@ -24,10 +24,7 @@ const signUpUser = async (req, res) => {
             user: { id: user._id, name, username, email, avatar, background },
         });
     } catch (error) {
-        console.log(error);
-        return res
-            .status(500)
-            .send({ message: 'Ocorreu um erro ao realizar o cadastro' });
+        return res.status(500).send({ message: error.message });
     }
 };
 
@@ -41,26 +38,22 @@ const findAllUsers = async (req, res) => {
 
         res.status(200).send(allUsers);
     } catch (error) {
-        console.log(error);
-        res.status(500).send('Houve algum problema ao buscar os usuários');
+        return res.status(500).send({ message: error.message });
     }
 };
 
-const findUserById = async (req, res) => {
-    const userId = req.params.userId;
-
+const findUserById = (req, res) => {
     try {
-        const user = await userServices.findUserById(userId);
+        const user = req.user;
         return res.status(200).send(user);
     } catch (error) {
-        console.log(error);
-        return res.status(500).send('Houve algum problema ao buscar o usuário');
+        return res.status(500).send({ message: error.message });
     }
 };
 
 const updateUser = async (req, res) => {
     const { name, username, email, password, avatar, background } = req.body;
-    const userId = req.params.userId;
+    const userId = req.userId;
 
     try {
         await userServices.updateUser(
@@ -75,10 +68,7 @@ const updateUser = async (req, res) => {
 
         return res.status(200).send('Atualização de dados feita  com sucesso');
     } catch (error) {
-        console.log(error);
-        return res
-            .status(500)
-            .send('Houve algum erro ao tentar atualizar os dados do usário');
+        return res.status(500).send({ message: error.message });
     }
 };
 
