@@ -1,30 +1,27 @@
 import { Router } from 'express';
-import userController from '../Controllers/user.controller.js';
-import globalMiddlewares from '../Middlewares/global.middlewares.js';
+
+import {
+    findAllUsers,
+    signUpUser,
+    findUserById,
+    updateUser,
+} from '../Controllers/user.controller.js';
+
+import {
+    verifyId,
+    verifyUser,
+    verifySignUpData,
+    verifyUpdateData,
+} from '../Middlewares/global.middlewares.js';
 
 const userRoute = Router();
 
-userRoute.get('/', userController.findAllUsers);
+userRoute.get('/', findAllUsers);
 
-userRoute.post(
-    '/',
-    globalMiddlewares.verifySignUpData,
-    userController.signUpUser
-);
+userRoute.post('/', verifySignUpData, signUpUser);
 
-userRoute.get(
-    '/:userId',
-    globalMiddlewares.verifyId,
-    globalMiddlewares.verifyUser,
-    userController.findUserById
-);
+userRoute.get('/:userId', verifyId, verifyUser, findUserById);
 
-userRoute.patch(
-    '/:userId',
-    globalMiddlewares.verifyId,
-    globalMiddlewares.verifyUser,
-    globalMiddlewares.verifyUpdateData,
-    userController.updateUser
-);
+userRoute.patch('/:userId', verifyId, verifyUser, verifyUpdateData, updateUser);
 
 export default userRoute;

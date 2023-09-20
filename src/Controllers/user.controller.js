@@ -72,6 +72,4 @@ const updateUser = async (req, res) => {
     }
 };
 
-const userController = { signUpUser, findAllUsers, findUserById, updateUser };
-
-export default userController;
+export { signUpUser, findAllUsers, findUserById, updateUser };

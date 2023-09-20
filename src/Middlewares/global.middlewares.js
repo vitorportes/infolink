@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 import userServices from '../Services/user.service.js';
+import { findUserByEmail } from '../Services/auth.service.js';
 
 const verifyId = async (req, res, next) => {
     try {
@@ -81,11 +83,38 @@ const verifyUpdateData = (req, res, next) => {
     }
 };
 
-const globalMiddlewares = {
+const verifyLoginData = async (req, res, next) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await findUserByEmail(email);
+
+        if (!user) {
+            return res
+                .status(401)
+                .send({ message: 'Email ou senha incorretos' });
+        }
+
+        req.user = user;
+
+        const passwordIsValid = await bcrypt.compare(password, user.password);
+
+        if (!passwordIsValid) {
+            return res
+                .status(401)
+                .send({ message: 'Email ou senha incorretos' });
+        }
+
+        return next();
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};
+
+export {
     verifyId,
     verifyUser,
     verifySignUpData,
     verifyUpdateData,
+    verifyLoginData,
 };
-
-export default globalMiddlewares;
