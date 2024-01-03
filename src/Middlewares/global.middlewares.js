@@ -90,7 +90,9 @@ const verifyLoginData = async (req, res, next) => {
         const user = await findUserByEmail(email);
 
         if (!user) {
-            return res.status(401).send({ message: 'Email incorreto' });
+            return res
+                .status(401)
+                .send({ message: 'Email ou senha incorretos' });
         }
 
         req.user = user;
