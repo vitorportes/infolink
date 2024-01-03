@@ -4,6 +4,7 @@ import express from 'express';
 
 import authRoute from './Routes/auth.route.js';
 import userRoute from './Routes/user.route.js';
+import newsRoute from './Routes/news.route.js';
 import connectDb from './Database/db.js';
 
 dotenv.config();
@@ -16,5 +17,6 @@ server.use(express.json());
 server.use(cors());
 server.use('/user', userRoute);
 server.use('/auth', authRoute);
+server.use('/news', newsRoute);
 
 server.listen(port, () => console.log(`server funcionando na porta ${port}`));
